@@ -103,17 +103,11 @@ void Analyze() {
    TH1I h("h", " Distribution for your entry", 100, -100, 100);
    h.SetFillColor(40);
    
-   
-   if(entry.find("int")!=string::npos) {
-       for (auto entryId : *ntuple) {
-       ntuple->LoadEntry(entryId);
-       h.Fill(*p.first);
-      }
-   } else if(entry.find("float")!=string::npos) {
-      for (auto entryId : *ntuple) {
-      ntuple->LoadEntry(entryId);
-      h.Fill(*p.second); 
-      }
+   for(auto entryId: *ntuple) 
+   {
+     ntuple->LoadEntry(entryId);
+     if(entry.find("int")!=string::npos)h.Fill(*p.first);
+     else if(entry.find("float")!=string::npos)h.Fill(*p.second);
    }
    
    h.DrawCopy();
