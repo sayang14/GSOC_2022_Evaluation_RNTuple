@@ -62,8 +62,7 @@ void Ingest() {
     
     // We hand-over the data model to a newly created ntuple of name "new_ntuple", stored in kNTupleFileName
     auto ntuple = RNTupleWriter::Recreate(std::move(model), "new_ntuple", kNTupleFileName);
-    
-    auto size = h.size();
+ 
     std::string record;
     while(std::getline(fin,record)) {
        std::istringstream iss(record);
