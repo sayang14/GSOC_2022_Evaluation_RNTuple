@@ -41,7 +41,7 @@ void Ingest() {
     
     std::string record_header,word;
     getline(fin,record_header);
-    //record_header = ',' + record_header;
+    
     std::cout<<record_header<<std::endl;
     std::istringstream iss(record_header);
     int i = 0;
