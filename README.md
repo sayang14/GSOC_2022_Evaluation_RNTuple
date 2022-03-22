@@ -3,12 +3,13 @@ Automatic conversion of data stored in TTree form to RNTuple-1st Evaluation Code
 
 Software Environment Used: Ubuntu(WSL-Windows Linux Subsystem)
 
-Output of the source code after running:
+To run the file containing the main source code:
 
 sayang@DESKTOP-IFS80HM:~/root_src/tutorials/v7/ntuple$ root gsoc_eval_RNTuple.C
 
-![image](https://user-images.githubusercontent.com/77008026/158234714-5f74854d-a33f-45a2-a611-17b9f96c874b.png)
-![image](https://user-images.githubusercontent.com/77008026/158234780-6777dce2-88ec-4971-902c-3282bd00d44c.png)
+Tested on three csv Files:
+1) input_file.csv(4 entries)
+2) test_sample100.csv(100 entries)
+3) test_sample84006.csv(84006 entries)
 
-
-![image](https://user-images.githubusercontent.com/77008026/158234876-2c79d86f-2eb5-492d-9c1b-a15b787350af.png)
+All the results can be found in the report(pdf) given in the repository
