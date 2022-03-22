@@ -12,4 +12,4 @@ Tested on three csv Files:
 2) test_sample100.csv(100 entries)
 3) test_sample84006.csv(84006 entries)
 
-All the results can be found in the report(pdf) given in the repository
+All the results can be found in the report(pdf) given in the repository: https://github.com/sayang14/GSOC_2022_Evaluation_RNTuple/blob/main/GSoC-2022-RNTuple-phase1_c.pdf 
