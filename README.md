@@ -12,5 +12,5 @@ Tested on 3 csv files:
 2) test_sample100.csv(100 entries)
 3) test_sample84006(84006 entries)
 
-The results for the above files(after running it according to the commmand mentioned above) can be found on the report given in the repository:
+The results for the above files(after running it according to the command mentioned above) can be found on the report given in the repository:
 https://github.com/sayang14/GSOC_2022_Evaluation_RNTuple/blob/main/Google%20Summer%20Of%20Code%202022%201st%20Evaluation%20Report_(CERN-HSF)%20-%20Google%20Docs.pdf
