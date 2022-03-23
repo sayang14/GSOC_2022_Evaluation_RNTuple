@@ -7,6 +7,7 @@ R__LOAD_LIBRARY(ROOTNTuple)
 #include <TROOT.h>
 #include <TString.h>
  
+#include <cstring>
 #include <cassert>
 #include <cstdio>
 #include <fstream>
@@ -22,17 +23,16 @@ using RNTupleWriter = ROOT::Experimental::RNTupleWriter;
 
 constexpr char const* kNTupleFileName = "gsoc_eval_RNTuple.root";
 
-std::vector<string> h;
-std::vector<std::shared_ptr<int>> v1;
-std::vector<std::shared_ptr<float>> v2;
+std::vector<vector<string>> h;
 std::pair<std::shared_ptr<int>,std::shared_ptr<float>> p;
+std::map<int,std::shared_ptr<int>> mp1;
+std::map<int,std::shared_ptr<float>> mp2;
+
 
 void Ingest() {
-    // The input file temperature_prague.dat is a copy of the temperature data base in Prague from 1775 to 2004
-    //"/tree/temperature_Prague.csv"
     char filename[100];
     //I specifically mentioned the tuitorials directory since I found most of the datasets are stored there
-    std::cout << "Enter the csv filename path(no more than 100 characters) present in the installation/tutorials directory of ROOT):";
+    std::cout << "Enter the csv filename path(no more than 100 characters) present in the installation/tutorials directory of ROOT):"<<std::endl;
     std::cin >> filename;
     ifstream fin(gROOT->GetTutorialDir() + "/tree/" + filename);
     assert(fin.is_open());
@@ -41,39 +41,39 @@ void Ingest() {
     
     std::string record_header,word;
     getline(fin,record_header);
+    std::cout<<record_header<<std::endl;
     std::istringstream iss(record_header);
+    int i = 0;
     while(getline(iss,word,','))
     {
-      h.push_back(word);
-    }
-    //std::cout<<h.size()<<std::endl;
-      for(int i=0;i<h.size();i++)
-      {
-        if(h[i].find("int")!= string::npos){
-        auto fld = model->MakeField<int>(h[i]);
-        v1.push_back(fld);
-        //std::cout<<"int"<<std::endl;
+      if(word.find("int")!= string::npos){
+        mp1[i] = model->MakeField<int>(word);
+        mp2[i] = nullptr;
+        i++;
         }
-        else if(h[i].find("float")!= string::npos) {
-        auto fld = model->MakeField<float>(h[i]);
-        v2.push_back(fld);
-        }
-      }
+        else if(word.find("float")!= string::npos) {
+        mp2[i] = model->MakeField<float>(word);
+        mp1[i] = nullptr;
+        i++;
+        } else continue;
+    }   
     
     // We hand-over the data model to a newly created ntuple of name "new_ntuple", stored in kNTupleFileName
     auto ntuple = RNTupleWriter::Recreate(std::move(model), "new_ntuple", kNTupleFileName);
     
-    auto size = h.size();
     std::string record;
+    //std::cout<<v1.size()<<" "<<v2.size()<<std::endl;
     while(std::getline(fin,record)) {
        std::istringstream iss(record);
        //iss>>*fld1>>*fld2>>*fld3>>*fld4;
-       for(auto fld : v1)iss>>*fld;
-       for(auto fld : v2)iss>>*fld;
+       for(int j=0;j<i;j++)
+       {
+          if(mp1[j]==nullptr)iss>>*mp2[j];
+          else iss>>*mp1[j];
+          if(iss.peek()==',')iss.ignore();
+       }
        ntuple->Fill();
-    }
-    
-       
+    }  
 }
 
 void Analyze() {
@@ -81,10 +81,10 @@ void Analyze() {
    auto model = RNTupleModel::Create();
    
    std::string entry;
-   std::cout<<"Enter the entry whose distribution you wish to see in the following way(Name:Type)!"<<std::endl;
+   std::cout<<"Enter the entry whose distribution you wish to see in the following way(Name:Type)(Avoid any spaces)!"<<std::endl;
    std::cin>>entry;
    
-   //defining field(fldTemp from Ingest function where it was declared) that is needed for reading
+   //defining field(fld from Ingest function where it was declared) that is needed for reading
    if(entry.find("int")!=string::npos){auto fld = model->MakeField<int>(entry);
      p.first = fld;
    }
@@ -103,11 +103,11 @@ void Analyze() {
    TH1I h("h", " Distribution for your entry", 100, -100, 100);
    h.SetFillColor(40);
    
-   for(auto entryId: *ntuple) 
-   {
-     ntuple->LoadEntry(entryId);
-     if(entry.find("int")!=string::npos)h.Fill(*p.first);
-     else if(entry.find("float")!=string::npos)h.Fill(*p.second);
+   
+   for (auto entryId : *ntuple) {
+      ntuple->LoadEntry(entryId);
+      if(entry.find("int")!=string::npos)h.Fill(*p.first);
+      else if(entry.find("float")!=string::npos)h.Fill(*p.second); 
    }
    
    h.DrawCopy();
@@ -117,3 +117,11 @@ void gsoc_eval_RNTuple() {
    Ingest();
    Analyze();
 }
+
+
+
+
+
+
+
+
